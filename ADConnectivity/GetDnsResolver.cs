@@ -10,34 +10,9 @@ using System.Text;
 
 namespace ADConnectivity
 {
-    [Cmdlet(VerbsDiagnostic.Test, "DnsServer")]
-    public class TestDnsServer : PSCmdlet
-    {
-        public Resolver resolver { get; private set; }
-
-
-        [Parameter(Mandatory = true, Position = 0)]
-        public IPAddress IpAddress { get; set; }
-
-        [Parameter(Mandatory = true, Position = 1)]
-        public string Domain { get; set; }
-
-        protected override void BeginProcessing()
-        {
-            resolver = new Resolver(IpAddress, 53);
-        }
-
-        protected override void ProcessRecord()
-        {
-            WriteObject(IpAddress);
-            WriteObject(resolver.GetHostByName(Domain));
-        }
-
-
-    }
-
-    [Cmdlet(VerbsCommon.Get, "DnsServer", DefaultParameterSetName = "IpAddress")]
-    public class GetDnsServer : PSCmdlet
+    
+    [Cmdlet(VerbsCommon.Get, "DnsResolver", DefaultParameterSetName = "IpAddress")]
+    public class GetDnsResolver : PSCmdlet
     {
         [Parameter(Mandatory = true, Position = 0, ValueFromPipeline = true, ParameterSetName = "IpAddress")]
         public IPAddress[] IpAddress { get; set; }
@@ -76,7 +51,7 @@ namespace ADConnectivity
                     {
                         WriteWarning(string.Format("Unable to resolve hostname {0}", name));
                     }
-                   
+
                 } //end foreach name in Hostname
             }
 
