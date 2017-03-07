@@ -8,16 +8,19 @@ using System.Management.Automation;
 using System.Net;
 using System.Text;
 
-namespace ADConnectivity
+
+namespace Dusty.Net
 {
     
     [Cmdlet(VerbsCommon.Get, "DnsResolver", DefaultParameterSetName = "IpAddress")]
+    [OutputType(typeof(DnsResolver))]
     public class GetDnsResolver : PSCmdlet
     {
         [Parameter(Mandatory = true, Position = 0, ValueFromPipeline = true, ParameterSetName = "IpAddress")]
         public IPAddress[] IpAddress { get; set; }
 
         [Parameter(Mandatory = true, Position = 0, ValueFromPipeline = true, ParameterSetName = "Hostname")]
+        [ValidateDnsHostname()]
         public string[] Hostname { get; set; }
 
 
@@ -28,8 +31,7 @@ namespace ADConnectivity
             {
                 foreach (IPAddress ip in IpAddress)
                 {
-                    WriteObject(new Resolver(new IPEndPoint(ip, 53)));
-                    Console.WriteLine("Processed one");
+                    WriteObject(new DnsResolver(new IPEndPoint(ip, 53)));
                 }
             }
             else
@@ -43,7 +45,7 @@ namespace ADConnectivity
                         IPHostEntry host = System.Net.Dns.GetHostEntry(name);
                         foreach (IPAddress ip in host.AddressList)
                         {
-                            WriteObject(new Resolver(new IPEndPoint(ip, 53)));
+                            WriteObject(new DnsResolver(new IPEndPoint(ip, 53)));
                             Console.WriteLine("Processed one");
                         }
                     }

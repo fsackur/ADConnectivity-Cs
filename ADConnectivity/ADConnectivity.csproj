@@ -7,7 +7,7 @@
     <ProjectGuid>{A374D525-7289-4F0D-B02F-8C9AC1142B63}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ADConnectivity</RootNamespace>
+    <RootNamespace>Dusty.ADConnectivity</RootNamespace>
     <AssemblyName>ADConnectivity</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -53,9 +53,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CidrIpAddress.cs" />
+    <Compile Include="DnsResolver.cs" />
+    <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GetDnsResolver.cs" />
+    <Compile Include="SubnetMask.cs" />
     <Compile Include="TestDnsResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="ValidateDnsHostnameAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ADConnectivity.psd1">

@@ -8,14 +8,14 @@ using System.Management.Automation;
 using System.Net;
 using System.Text;
 
-namespace ADConnectivity
+namespace Dusty.Net
 {
     [Cmdlet(VerbsDiagnostic.Test, "DnsResolver", DefaultParameterSetName = "A")]
     [OutputType("bool", ParameterSetName = new string[] { "ActiveDirectory" })]
     public class TestDnsResolver : PSCmdlet
     {
         [Parameter(ValueFromPipeline = true, Mandatory = true, Position = 0)]
-        public Resolver DnsResolver { get; set; }
+        public DnsResolver DnsResolver { get; set; }
 
         [Parameter(Mandatory = true, Position = 1)]
         public string Domain { get; set; }
