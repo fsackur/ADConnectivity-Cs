@@ -12,51 +12,44 @@ using System.Text;
 namespace Dusty.Net
 {
     
-    [Cmdlet(VerbsCommon.Get, "DnsResolver", DefaultParameterSetName = "IpAddress")]
+    [Cmdlet(VerbsCommon.Get, "DnsResolver")]
     [OutputType(typeof(DnsResolver))]
     public class GetDnsResolver : PSCmdlet
     {
-        [Parameter(Mandatory = true, Position = 0, ValueFromPipeline = true, ParameterSetName = "IpAddress")]
-        public IPAddress[] IpAddress { get; set; }
-
-        [Parameter(Mandatory = true, Position = 0, ValueFromPipeline = true, ParameterSetName = "Hostname")]
-        [ValidateDnsHostname()]
-        public string[] Hostname { get; set; }
-
-
+        [Parameter(Mandatory = true, Position = 0, ValueFromPipeline = true)]
+        [ValidateDnsHostnameOrIpAddress()]
+        public string[] ComputerName { get; set; }
 
         protected override void ProcessRecord()
         {
-            if (ParameterSetName == "IpAddress")
+            
+            List<IPAddress> ipList = new List<IPAddress>();
+
+            foreach (string name in ComputerName)
             {
-                foreach (IPAddress ip in IpAddress)
+                if (System.Uri.CheckHostName(name.ToString()) == System.UriHostNameType.IPv4 ||
+                        System.Uri.CheckHostName(name.ToString()) == System.UriHostNameType.IPv6)
                 {
+                    IPAddress ip = IPAddress.Parse(name);
                     WriteObject(new DnsResolver(new IPEndPoint(ip, 53)));
+                    continue;
                 }
-            }
-            else
-            {
-                List<IPAddress> ipList = new List<IPAddress>();
 
-                foreach (string name in Hostname)
+                try
                 {
-                    try
+                    IPHostEntry host = System.Net.Dns.GetHostEntry(name);
+                    foreach (IPAddress ip in host.AddressList)
                     {
-                        IPHostEntry host = System.Net.Dns.GetHostEntry(name);
-                        foreach (IPAddress ip in host.AddressList)
-                        {
-                            WriteObject(new DnsResolver(new IPEndPoint(ip, 53)));
-                            Console.WriteLine("Processed one");
-                        }
+                        WriteObject(new DnsResolver(new IPEndPoint(ip, 53)));
                     }
-                    catch
-                    {
-                        WriteWarning(string.Format("Unable to resolve hostname {0}", name));
-                    }
+                }
+                catch
+                {
+                    WriteWarning(string.Format("Unable to resolve hostname {0}", name));
+                }
 
-                } //end foreach name in Hostname
-            }
-
+            } //end foreach name in ComputerName
         }  //end ProcessRecord
+
     }
 }
