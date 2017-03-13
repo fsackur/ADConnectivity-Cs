@@ -7,9 +7,11 @@ using System.Linq;
 using System.Management.Automation;
 using System.Net;
 using System.Text;
+using Dusty.ADConnectivity;
+using Dusty.Net;
 
 
-namespace Dusty.Net
+namespace Dusty.ADConnectivity
 {
     
     [Cmdlet(VerbsCommon.Get, "DnsResolver")]

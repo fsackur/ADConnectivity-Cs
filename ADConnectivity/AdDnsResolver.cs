@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using Heijden.DNS;
+using Dusty.Net;
 
 namespace Dusty.ADConnectivity
 {
@@ -13,53 +14,77 @@ namespace Dusty.ADConnectivity
     {
         private readonly string pdcMultipleRecordError = "Multiple records for PDC locator";
 
-        public AdDnsResolver(IPEndPoint DnsServer, string AdDomain) : this(DnsServer)
+        public AdDnsResolver(IPEndPoint DnsServer, string AdDomain) : base(DnsServer)
         {
             this.AdDomain = AdDomain;
         }
 
-        //hide the parent's constructor, because it makes no sense to have this calss without the AdDomain property
+        //hide the parent's constructor, because it makes no sense to have this class without the AdDomain property
         private AdDnsResolver(IPEndPoint DnsServer) : base(DnsServer)
         {
         }
 
         public string AdDomain { get; private set; }
 
-        public Response Pdc { get; private set; }
+        public string AdSite { get; set; }
 
-        public Response DomainARecords { get; private set; }
+        public DnsResponse Pdc { get; private set; }
 
-        public Response QueryPdc()
+        public DnsResponse DomainARecords { get; private set; }
+
+        public DnsResponse QueryPdc()
         {
-            string question = $"_ldap._tcp.pdc._msdcs.[_adDomain]";
-            Pdc = Query(question, QType.SRV);
-            if (Pdc.Answers.Count > 0)
+            string question = string.Format("_ldap._tcp.pdc._msdcs.{0}", AdDomain);
+
+            Pdc = base.Query(question, QType.SRV);
+            if (Pdc.Answers.Count() > 1)
             {
-                Pdc.Error = pdcMultipleRecordError;
+                Pdc = new DnsResponse(
+                    null,
+                    pdcMultipleRecordError
+                    );
             }
+            
             return Pdc;
         }
 
-        public Response QueryDomainARecords()
+        public DnsResponse QueryDomainARecords()
         {
             DomainARecords = Query(AdDomain, QType.A);
             return DomainARecords;
         }
 
-        public AdDnsResolver QueryAd()
+        public AdDnsResponse QueryAd()
         {
-            QueryPdc();
-            QueryDomainARecords();
-            return this;
+            return QueryAd(AdDnsResolver.DefaultAdQueries);
         }
 
-        public bool Equals(AdDnsResolver comparison)
+        public AdDnsResponse QueryAd(Dictionary<string, Func<AdDnsResolver, DnsResponse>> adQueries)
         {
-            if (comparison == null) { return false; }
-            return (
-                Pdc.AnswerEquals(comparison.Pdc) &&
-                DomainARecords.AnswerEquals(comparison.DomainARecords)
-            );
+            return new AdDnsResponse(
+                dnsServer: this.DnsServer,
+                adDomain: this.AdDomain,
+                adSite: this.AdSite,
+                namedResponses: RunAdQueries(adQueries)
+                );
         }
+
+        private Dictionary<string, DnsResponse> RunAdQueries(Dictionary<string, Func<AdDnsResolver, DnsResponse>> adQueries)
+        {
+            var namedResponses = from name in adQueries.Keys
+                                 let response = adQueries[name](this)
+                                 select new KeyValuePair<string, DnsResponse>(name, response);
+            return namedResponses.ToDictionary(x => x.Key, x => x.Value);
+
+        }
+
+        public static Dictionary<string, Func<AdDnsResolver, DnsResponse>> DefaultAdQueries =
+                    new Dictionary<string, Func<AdDnsResolver, DnsResponse>>(10)
+        {
+            { "PDC", resolver => resolver.QueryPdc() },
+            { "DomainARecords", resolver => resolver.QueryDomainARecords() }
+
+        };
+
     }
 }

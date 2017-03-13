@@ -5,20 +5,28 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Heijden.DNS;
+using Dusty.Net;
 
-namespace Dusty.Net
+namespace Dusty.ADConnectivity
 {
-    public class DnsResolver : Resolver
+    public class DnsResolver
     {
-        public DnsResolver(IPEndPoint DnsServer) : base(DnsServer)
+        public DnsResolver(IPEndPoint DnsServer)
         {
+            this.resolver = new Resolver(DnsServer);
         }
 
-        public string[] SimpleQuery(string name, QType qtype)
-        {
-            Response r = Query(name, qtype);
+        private Resolver resolver;
+        public string DnsServer { get { return resolver.DnsServer; } }
 
-            return r.GetAnswerStrings();
+        public DnsResponse Query(string name, QType qtype)
+        {
+            Response r = resolver.Query(name, qtype);
+
+            return new DnsResponse(
+                r.GetAnswerStrings(),
+                r.Error
+                );
 
         }
     }

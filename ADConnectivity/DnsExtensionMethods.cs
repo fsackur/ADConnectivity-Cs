@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Heijden.DNS;
+using Dusty.Net;
 
-namespace Dusty.Net
+namespace Dusty.ADConnectivity
 {
     public static class DnsExtensionMethods
     {
@@ -28,6 +29,7 @@ namespace Dusty.Net
             return strings.ToArray<string>();
         }
 
+        /*
         public static bool AnswerEquals(this Response response, Response comparison)
         {
             if (comparison == null || response == null)
@@ -41,5 +43,6 @@ namespace Dusty.Net
 
             return responseStrings.SequenceEqual<string>(comparisonStrings);
         }
+        */
     }
 }

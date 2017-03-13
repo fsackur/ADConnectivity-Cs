@@ -57,9 +57,10 @@
     <Compile Include="AdDnsResponse.cs" />
     <Compile Include="DnsExtensionMethods.cs" />
     <Compile Include="DnsResolver.cs" />
+    <Compile Include="DnsResponse.cs" />
+    <Compile Include="GetAdDnsResolver.cs" />
     <Compile Include="GetDnsResolver.cs" />
-    <Compile Include="GetDnsResponse.cs" />
-    <Compile Include="TestDnsResolver.cs" />
+    <Compile Include="TestAdDns.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValidateDnsHostnameAttribute.cs" />
   </ItemGroup>

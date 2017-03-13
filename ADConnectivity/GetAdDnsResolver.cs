@@ -7,18 +7,24 @@ using System.Linq;
 using System.Management.Automation;
 using System.Net;
 using System.Text;
+using Dusty.ADConnectivity;
+using Dusty.Net;
 
 
-namespace Dusty.Net
+namespace Dusty.ADConnectivity
 {
     
-    [Cmdlet(VerbsCommon.Get, "DnsResolver")]
-    [OutputType(typeof(DnsResolver))]
-    public class GetDnsResolver : PSCmdlet
+    [Cmdlet(VerbsCommon.Get, "AdDnsResolver")]
+    [OutputType(typeof(AdDnsResolver))]
+    public class GetAdDnsResolver : PSCmdlet
     {
         [Parameter(Mandatory = true, Position = 0, ValueFromPipeline = true)]
         [ValidateDnsHostnameOrIpAddress()]
         public string[] ComputerName { get; set; }
+
+        [Parameter(Mandatory = true, Position = 1)]
+        [ValidateDnsHostname()]
+        public string AdDomain { get; set; }
 
         protected override void ProcessRecord()
         {
@@ -31,7 +37,7 @@ namespace Dusty.Net
                         System.Uri.CheckHostName(name.ToString()) == System.UriHostNameType.IPv6)
                 {
                     IPAddress ip = IPAddress.Parse(name);
-                    WriteObject(new DnsResolver(new IPEndPoint(ip, 53)));
+                    WriteObject(new AdDnsResolver(new IPEndPoint(ip, 53), AdDomain));
                     continue;
                 }
 
@@ -40,7 +46,7 @@ namespace Dusty.Net
                     IPHostEntry host = System.Net.Dns.GetHostEntry(name);
                     foreach (IPAddress ip in host.AddressList)
                     {
-                        WriteObject(new DnsResolver(new IPEndPoint(ip, 53)));
+                        WriteObject(new AdDnsResolver(new IPEndPoint(ip, 53), AdDomain));
                     }
                 }
                 catch
