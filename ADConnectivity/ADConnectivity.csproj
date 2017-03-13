@@ -33,7 +33,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Heijden.Dns, Version=2.0.0.6, Culture=neutral, processorArchitecture=MSIL">
@@ -69,15 +69,18 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <LastGenOutput>ADConnectivity.cs</LastGenOutput>
     </None>
+    <None Include="ADConnectivity.psm1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
-    <None Include="Update-ModuleManifest.ps1" />
+    <None Include="PostBuild.ps1" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>powershell -NoProfile -NoExit -File $(ProjectDir)\Update-ModuleManifest.ps1 -TargetPath $(TargetPath)</PostBuildEvent>
+    <PostBuildEvent>powershell -NoProfile -NoExit -File $(ProjectDir)\PostBuild.ps1 -TargetPath $(TargetPath)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
