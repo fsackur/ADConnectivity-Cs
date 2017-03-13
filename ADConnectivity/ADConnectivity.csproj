@@ -65,6 +65,9 @@
     <Compile Include="ValidateDnsHostnameAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ADConnectivity.format.ps1xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="ADConnectivity.psd1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <LastGenOutput>ADConnectivity.cs</LastGenOutput>

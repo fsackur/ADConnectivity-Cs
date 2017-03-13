@@ -30,6 +30,7 @@ Remove-Item .\System.Management.Automation.dll -Force -ErrorAction SilentlyConti
 [void](New-Item -ItemType Directory -Path Public -Force)
 Get-ChildItem '.\*.dll' | %{Move-Item $_ .\Private -Force}
 Get-ChildItem '.\*.pdb' | %{Move-Item $_ .\Private -Force}
+Get-ChildItem '.\*.ps1xml' | %{Move-Item $_ .\Private -Force}
 Get-ChildItem '.\*.psm1' | %{Move-Item $_ .\Public -Force}
 Get-ChildItem '.\*.ps1' | %{Move-Item $_ .\Public -Force}
 

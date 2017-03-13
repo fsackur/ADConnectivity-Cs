@@ -15,6 +15,7 @@ namespace Dusty.ADConnectivity
             )
         {
             this.AdDomain = adDomain;
+            this.DnsServer = dnsServer;
             this.namedResponses = namedResponses;
         }
 
@@ -55,8 +56,10 @@ namespace Dusty.ADConnectivity
         {
             return namedResponses
                 .Values
-                .Select(r => r.Error)
-                .ToArray<string>();
+                .Select(response => response.Error)
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .Distinct()
+                .ToArray();
         }
 
         public DnsResponse GetResponse(string name)
