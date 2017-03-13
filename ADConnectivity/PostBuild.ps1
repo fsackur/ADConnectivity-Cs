@@ -6,21 +6,38 @@
     Run as a post-build event
 #>
 param(
-    [string]$TargetPath = 'C:\dev\ADConnectivity\ADConnectivity\bin\Debug\ADConnectivity.dll'
+    [string]$TargetPath
 )
 
 
-<#Increment version number in .psd1 file to match .dll
-$Version = (Get-Item $TargetPath).VersionInfo.ProductVersion;
-$PsdPath = $TargetPath -replace 'dll$', 'psd1'
-$Content = Get-Content $PsdPath -Raw
-$Content.Replace("ModuleVersion = '1.0'", "ModuleVersion = '$Version'") | Out-File $PsdPath -Force
-#>
-Set-Location $TargetPath
-Remove-Item .\System.Management.Automation.dll -Force
+$ProjectDir = $PSScriptRoot
+$TargetDir = Split-Path $TargetPath
+
+$PSBoundParameters
+
+#Increment version number in .psd1 file to match .dll
+try {
+    $Version = (Get-Item $TargetPath -ErrorAction Stop).VersionInfo.ProductVersion;
+    $PsdPath = $TargetPath -replace 'dll$', 'psd1'
+    $Content = Get-Content $PsdPath -Raw
+    $Content.Replace("ModuleVersion = '(\d*\.?){0,4}'", "ModuleVersion = '$Version'") | Out-File $PsdPath -Force
+} catch {}
+
+#Move into public / private folders
+Set-Location $TargetDir
+Remove-Item .\System.Management.Automation.dll -Force -ErrorAction SilentlyContinue  #We don't need this if we're running in PowerShell
 [void](New-Item -ItemType Directory -Path Private -Force)
 [void](New-Item -ItemType Directory -Path Public -Force)
-Get-ChildItem '.\*.dll' | %{Move-Item $_ .\Private}
-Get-ChildItem '.\*.pdb' | %{Move-Item $_ .\Private}
-Get-ChildItem '.\*.psm1' | %{Move-Item $_ .\Public}
-Get-ChildItem '.\*.ps1' | %{Move-Item $_ .\Public}
+Get-ChildItem '.\*.dll' | %{Move-Item $_ .\Private -Force}
+Get-ChildItem '.\*.pdb' | %{Move-Item $_ .\Private -Force}
+Get-ChildItem '.\*.psm1' | %{Move-Item $_ .\Public -Force}
+Get-ChildItem '.\*.ps1' | %{Move-Item $_ .\Public -Force}
+
+#Update help file
+Import-Module PlatyPS
+Import-Module $PsdPath
+$Cmdlets = Get-Command -Module ADConnectivity -CommandType Cmdlet
+New-MarkdownHelp -Command $Cmdlets -OutputFolder $ProjectDir\docs -ErrorAction SilentlyContinue
+Update-MarkdownHelp -Path $ProjectDir\docs
+[void](New-Item -ItemType Directory -Path en-US -Force)
+New-ExternalHelp -Path $ProjectDir\docs -OutputPath .\en-US -Force
