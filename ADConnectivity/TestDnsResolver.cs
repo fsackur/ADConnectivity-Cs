@@ -7,11 +7,14 @@ using System.Linq;
 using System.Management.Automation;
 using System.Net;
 using System.Text;
+using Dusty.ADConnectivity;
 
 namespace Dusty.Net
 {
     [Cmdlet(VerbsDiagnostic.Test, "DnsResolver", DefaultParameterSetName = "A")]
     [OutputType("bool", ParameterSetName = new string[] { "ActiveDirectory" })]
+    [OutputType("string", ParameterSetName = new string[] { "SimpleResponse" })]
+    [OutputType("string", ParameterSetName = new string[] { "SimpleResponse" })]
     public class TestDnsResolver : PSCmdlet
     {
         [Parameter(ValueFromPipeline = true, Mandatory = true, Position = 0)]
@@ -43,33 +46,8 @@ namespace Dusty.Net
             if (ParameterSetName != "ActiveDirectory")
             {
                 var response = DnsResolver.Query(Domain, QueryType);
-                switch (QueryType)
-                {
-                    case QType.A:
-                        WriteObject(response.RecordsA);
-                        break;
-                    case QType.SRV:
-                        WriteObject(response.RecordsSRV);
-                        break;
-                    case QType.CNAME:
-                        WriteObject(response.RecordsCNAME);
-                        break;
-                    case QType.PTR:
-                        WriteObject(response.RecordsPTR);
-                        break;
-                    case QType.NS:
-                        WriteObject(response.RecordsNS);
-                        break;
-                    case QType.SOA:
-                        WriteObject(response.RecordsSOA);
-                        break;
-                    case QType.TXT:
-                        WriteObject(response.RecordsTXT);
-                        break;
-                    default:
-                        //You can query the Resolver object's cache
-                        break;
-                }
+
+                WriteObject(response.GetAnswerStrings());
 
                 return;
             } // end if != ActiveDirectory

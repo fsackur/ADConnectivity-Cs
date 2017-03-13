@@ -13,5 +13,13 @@ namespace Dusty.Net
         public DnsResolver(IPEndPoint DnsServer) : base(DnsServer)
         {
         }
+
+        public string[] SimpleQuery(string name, QType qtype)
+        {
+            Response r = Query(name, qtype);
+
+            return r.GetAnswerStrings();
+
+        }
     }
 }

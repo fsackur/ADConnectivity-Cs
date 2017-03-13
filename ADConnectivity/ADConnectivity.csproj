@@ -53,8 +53,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdDnsResolver.cs" />
+    <Compile Include="AdDnsResponse.cs" />
+    <Compile Include="DnsExtensionMethods.cs" />
     <Compile Include="DnsResolver.cs" />
     <Compile Include="GetDnsResolver.cs" />
+    <Compile Include="GetDnsResponse.cs" />
     <Compile Include="TestDnsResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValidateDnsHostnameAttribute.cs" />
