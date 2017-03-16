@@ -16,6 +16,11 @@ namespace Dusty.ADConnectivity
             this.resolver = new Resolver(DnsServer);
         }
 
+        public DnsResolver(IPAddress DnsServer)
+        {
+            this.resolver = new Resolver(new IPEndPoint(DnsServer, 53));
+        }
+
         private Resolver resolver;
         public string DnsServer { get { return resolver.DnsServer; } }
 

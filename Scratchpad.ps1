@@ -1,4 +1,6 @@
 ﻿$S = Get-DnsResolver 134.213.29.116
+$S.Query("corp.dustyfox.uk", "A")
+
 $R = @{}
 $Domain = "corp.dustyfox.uk"
 $R.A = $S.Query($Domain, "A")

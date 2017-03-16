@@ -14,7 +14,7 @@ namespace Dusty.Net
 
         protected override void ValidateElement(object element)
         {
-            if (System.Uri.CheckHostName(element.ToString()) != System.UriHostNameType.Dns)
+            if (Uri.CheckHostName(element.ToString()) != UriHostNameType.Dns)
             {
                 throw new ValidationMetadataException($"'{element}' is not a valid DNS hostname");
             }
@@ -29,9 +29,9 @@ namespace Dusty.Net
         protected override void ValidateElement(object element)
         {
             if (
-                System.Uri.CheckHostName(element.ToString()) != System.UriHostNameType.Dns &&
-                System.Uri.CheckHostName(element.ToString()) != System.UriHostNameType.IPv4 &&
-                System.Uri.CheckHostName(element.ToString()) != System.UriHostNameType.IPv6
+                Uri.CheckHostName(element.ToString()) != UriHostNameType.Dns &&
+                Uri.CheckHostName(element.ToString()) != UriHostNameType.IPv4 &&
+                Uri.CheckHostName(element.ToString()) != UriHostNameType.IPv6
             )
             {
                 throw new ValidationMetadataException($"'{element}' is not a valid DNS hostname or IP address");

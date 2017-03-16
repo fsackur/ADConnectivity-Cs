@@ -29,8 +29,8 @@ namespace Dusty.ADConnectivity
 
             foreach (string name in ComputerName)
             {
-                if (System.Uri.CheckHostName(name.ToString()) == System.UriHostNameType.IPv4 ||
-                        System.Uri.CheckHostName(name.ToString()) == System.UriHostNameType.IPv6)
+                if (Uri.CheckHostName(name.ToString()) == UriHostNameType.IPv4 ||
+                        Uri.CheckHostName(name.ToString()) == UriHostNameType.IPv6)
                 {
                     IPAddress ip = IPAddress.Parse(name);
                     WriteObject(new DnsResolver(new IPEndPoint(ip, 53)));

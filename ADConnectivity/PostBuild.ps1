@@ -13,7 +13,6 @@ param(
 $ProjectDir = $PSScriptRoot
 $TargetDir = Split-Path $TargetPath
 
-$PSBoundParameters
 
 #Increment version number in .psd1 file to match .dll
 try {

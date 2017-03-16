@@ -33,8 +33,8 @@ namespace Dusty.ADConnectivity
 
             foreach (string name in ComputerName)
             {
-                if (System.Uri.CheckHostName(name.ToString()) == System.UriHostNameType.IPv4 ||
-                        System.Uri.CheckHostName(name.ToString()) == System.UriHostNameType.IPv6)
+                if (Uri.CheckHostName(name.ToString()) == UriHostNameType.IPv4 ||
+                        Uri.CheckHostName(name.ToString()) == UriHostNameType.IPv6)
                 {
                     IPAddress ip = IPAddress.Parse(name);
                     WriteObject(new AdDnsResolver(new IPEndPoint(ip, 53), AdDomain));
@@ -43,7 +43,7 @@ namespace Dusty.ADConnectivity
 
                 try
                 {
-                    IPHostEntry host = System.Net.Dns.GetHostEntry(name);
+                    IPHostEntry host = Dns.GetHostEntry(name);
                     foreach (IPAddress ip in host.AddressList)
                     {
                         WriteObject(new AdDnsResolver(new IPEndPoint(ip, 53), AdDomain));
