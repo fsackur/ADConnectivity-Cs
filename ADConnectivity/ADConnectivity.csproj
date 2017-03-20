@@ -54,26 +54,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdDnsResolver.cs" />
-    <Compile Include="AdDnsResponse.cs" />
-    <Compile Include="IPUtils.cs" />
-    <Compile Include="DnsExtensionMethods.cs" />
-    <Compile Include="DnsResolver.cs" />
-    <Compile Include="DnsResponse.cs" />
-    <Compile Include="GetAdDnsResolver.cs" />
-    <Compile Include="GetDnsResolver.cs" />
+    <Compile Include="Types\AdDnsResolver.cs" />
+    <Compile Include="Types\AdDnsResponse.cs" />
+    <Compile Include="Types\IPUtils.cs" />
+    <Compile Include="Types\DnsExtensionMethods.cs" />
+    <Compile Include="Types\DnsResolver.cs" />
+    <Compile Include="Types\DnsResponse.cs" />
+    <Compile Include="PSCmdlets\GetAdDnsResolver.cs" />
+    <Compile Include="PSCmdlets\GetDnsResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PSAttributeValidators.cs" />
+    <Compile Include="PSCmdlets\PSAttributeValidators.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ADConnectivity.format.ps1xml">
+    <None Include="PowerShell\ADConnectivity.format.ps1xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="ADConnectivity.psd1">
+    <None Include="PowerShell\ADConnectivity.psd1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <LastGenOutput>ADConnectivity.cs</LastGenOutput>
     </None>
-    <None Include="ADConnectivity.psm1">
+    <None Include="PowerShell\ADConnectivity.psm1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="docs\Get-AdDnsResolver.md" />

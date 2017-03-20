@@ -12,7 +12,7 @@ param(
 
 $ProjectDir = $PSScriptRoot
 $TargetDir = Split-Path $TargetPath
-
+Set-Location $TargetDir
 
 #Increment version number in .psd1 file to match .dll
 try {
@@ -22,9 +22,12 @@ try {
     $Content.Replace("ModuleVersion = '(\d*\.?){0,4}'", "ModuleVersion = '$Version'") | Out-File $PsdPath -Force
 } catch {}
 
+#Move out of the "PowerShell" folder; that is just for organisation of source code
+Get-ChildItem '.\PowerShell\*.*' | %{Move-Item $_ . -Force}
+Remove-Item '.\PowerShell' -Force
+
 #Move into public / private folders
-Set-Location $TargetDir
-Remove-Item .\System.Management.Automation.dll -Force -ErrorAction SilentlyContinue  #We don't need this if we're running in PowerShell
+Remove-Item .\System.Management.Automation.dll -Force -ErrorAction SilentlyContinue  #We don't need this in output, our cmdlets are running in PowerShell
 [void](New-Item -ItemType Directory -Path Private -Force)
 [void](New-Item -ItemType Directory -Path Public -Force)
 Get-ChildItem '.\*.dll' | %{Move-Item $_ .\Private -Force}
