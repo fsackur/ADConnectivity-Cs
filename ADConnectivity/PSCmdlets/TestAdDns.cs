@@ -27,6 +27,7 @@ namespace Dusty.ADConnectivity
         protected override void BeginProcessing()
         {
             resolvers = new List<AdDnsResolver>();
+            responses = new List<AdDnsResponse>();
         }
 
         protected override void ProcessRecord()
@@ -41,9 +42,13 @@ namespace Dusty.ADConnectivity
                 resolvers.ForEach(r => r.AdSite = AdSite);
             }
 
+            resolvers.ForEach(r => responses.Add(r.QueryAd()));
+
+
 
             WriteObject(resolvers);
-            
+            WriteObject(responses);
+
 
         }
     }
