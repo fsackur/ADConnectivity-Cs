@@ -39,7 +39,7 @@ Get-ChildItem '.\*.ps1' | %{Move-Item $_ .\Public -Force}
 #Update help file
 Import-Module PlatyPS
 Import-Module $PsdPath
-$Cmdlets = Get-Command -Module ADConnectivity -CommandType Cmdlet
+$Cmdlets = Get-Command -Module $PsdPath -CommandType Cmdlet
 New-MarkdownHelp -Command $Cmdlets -OutputFolder $ProjectDir\docs -ErrorAction SilentlyContinue
 Update-MarkdownHelp -Path $ProjectDir\docs
 [void](New-Item -ItemType Directory -Path en-US -Force)

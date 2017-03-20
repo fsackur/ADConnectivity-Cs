@@ -11,8 +11,19 @@ schema: 2.0.0
 
 ## SYNTAX
 
+### DnsOnly (Default)
 ```
-Get-DnsResolver [-ComputerName] <String[]> [<CommonParameters>]
+Get-DnsResolver -DnsServer <String[]> [<CommonParameters>]
+```
+
+### AdSpecifiedDomain
+```
+Get-DnsResolver -DnsServer <String[]> -AdDomain <String> [<CommonParameters>]
+```
+
+### AdMachineDomain
+```
+Get-DnsResolver -DnsServer <String[]> [-UseMachineDomain] [-UseMachineDnsServers] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -29,8 +40,23 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -ComputerName
-{{Fill ComputerName Description}}
+### -AdDomain
+{{Fill AdDomain Description}}
+
+```yaml
+Type: String
+Parameter Sets: AdSpecifiedDomain
+Aliases: 
+
+Required: True
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -DnsServer
+{{Fill DnsServer Description}}
 
 ```yaml
 Type: String[]
@@ -38,9 +64,39 @@ Parameter Sets: (All)
 Aliases: 
 
 Required: True
-Position: 0
+Position: Named
 Default value: None
 Accept pipeline input: True (ByValue)
+Accept wildcard characters: False
+```
+
+### -UseMachineDnsServers
+{{Fill UseMachineDnsServers Description}}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: AdMachineDomain
+Aliases: 
+
+Required: True
+Position: Named
+Default value: False
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -UseMachineDomain
+{{Fill UseMachineDomain Description}}
+
+```yaml
+Type: SwitchParameter
+Parameter Sets: AdMachineDomain
+Aliases: 
+
+Required: True
+Position: Named
+Default value: False
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 

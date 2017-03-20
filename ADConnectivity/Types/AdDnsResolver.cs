@@ -25,18 +25,6 @@ namespace Dusty.ADConnectivity
             this.AdDomain = AdDomain;
         }
 
-        public AdDnsResolver(IPAddress DnsServer) : base(DnsServer)
-        {
-            string ComputerName = Environment.GetEnvironmentVariable("COMPUTERNAME");
-            ManagementObject cs = new ManagementObject(
-                $"Root\\CIMv2:Win32_ComputerSystem.Name='{ComputerName}'"
-                );
-            this.AdDomain = cs.GetPropertyValue("Domain").ToString();
-        }
-
-        public AdDnsResolver(string DnsServer) : this(IPUtils.ParseAndResolve(DnsServer)[0]) { }
-
-
         //hide the parent's constructor, because it makes no sense to have this class without the AdDomain property
         private AdDnsResolver(IPEndPoint DnsServer) : base(DnsServer)
         {
@@ -52,7 +40,7 @@ namespace Dusty.ADConnectivity
 
         public DnsResponse QueryPdc()
         {
-            string question = string.Format("_ldap._tcp.pdc._msdcs.{AdDomain}", AdDomain);
+            string question = $"_ldap._tcp.pdc._msdcs.{AdDomain}";
 
             Pdc = base.Query($"_ldap._tcp.pdc._msdcs.{AdDomain}", QType.SRV);
             if (Pdc.Answers.Count() > 1)

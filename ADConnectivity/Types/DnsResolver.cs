@@ -6,9 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Heijden.DNS;
 using Dusty.Net;
+using System.Text.RegularExpressions;
 
 namespace Dusty.ADConnectivity
 {
+    //this is named DnsResolver to disambiguate from DnsServer management module
+    //it's a wrapper for the class from Heijden.DNS because we want simpler output for ease-of-use
     public class DnsResolver
     {
         public DnsResolver(IPEndPoint DnsServer)
@@ -21,18 +24,44 @@ namespace Dusty.ADConnectivity
             this.resolver = new Resolver(new IPEndPoint(DnsServer, 53));
         }
 
-        private Resolver resolver;
-        public string DnsServer { get { return resolver.DnsServer; } }
+        private Heijden.DNS.Resolver resolver;
+
+        public string DnsServer
+        {
+            get
+            {
+                return resolver.DnsServer;
+            }
+        }
+
+        public new string ToString()
+        {
+            return DnsServer;
+        }
 
         public DnsResponse Query(string name, QType qtype)
         {
-            Response r = resolver.Query(name, qtype);
+            Heijden.DNS.Response response = resolver.Query(name, qtype);
 
-            return new DnsResponse(
-                r.GetAnswerStrings(),
-                r.Error
-                );
+            List<string> answerStrings = new List<string>();
 
+            foreach (var answer in response.Answers)
+            {
+                string answerString = answer.RECORD.ToString();
+                if (answer.Type == Heijden.DNS.Type.SRV)
+                {
+                    answerString = Regex.Replace(answerString, "\\d* \\d* \\d* ", "");
+                }
+                answerStrings.Add(answerString);
+            }
+
+            return new DnsResponse(answerStrings.ToArray(), response.Error);
+
+        }
+
+        public DnsResponse Query(string name)
+        {
+            return Query(name, QType.A);
         }
     }
 }

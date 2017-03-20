@@ -40,6 +40,10 @@
       <HintPath>..\packages\Heijden.Dns.2.0.0\lib\net35\Heijden.Dns.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Management" />
@@ -54,18 +58,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PSCmdlets\TestAdDns.cs" />
     <Compile Include="Types\AdDnsResolver.cs" />
     <Compile Include="Types\AdDnsResponse.cs" />
     <Compile Include="Types\IPUtils.cs" />
     <Compile Include="Types\DnsExtensionMethods.cs" />
     <Compile Include="Types\DnsResolver.cs" />
     <Compile Include="Types\DnsResponse.cs" />
-    <Compile Include="PSCmdlets\GetAdDnsResolver.cs" />
     <Compile Include="PSCmdlets\GetDnsResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PSCmdlets\PSAttributeValidators.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="docs\Get-DnsResolver.md" />
     <None Include="PowerShell\ADConnectivity.format.ps1xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -76,9 +81,6 @@
     <None Include="PowerShell\ADConnectivity.psm1">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="docs\Get-AdDnsResolver.md" />
-    <None Include="docs\Get-DnsResolver.md" />
-    <None Include="docs\Test-DnsResolver.md" />
     <None Include="packages.config" />
     <None Include="PostBuild.ps1" />
   </ItemGroup>
