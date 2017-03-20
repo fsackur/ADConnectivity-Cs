@@ -87,7 +87,10 @@ namespace Dusty.ADConnectivity
             foreach (var name in response.Answers)
             {
                 var secondResponse = Query(name);
-                if (secondResponse.Error != null) { errors.Add(secondResponse.Error); }
+                if (!String.IsNullOrWhiteSpace(secondResponse.Error))
+                {
+                    errors.Add(secondResponse.Error);
+                }
                 ipAnswers.AddRange(secondResponse.Answers);
             }
 
@@ -131,10 +134,12 @@ namespace Dusty.ADConnectivity
         {
             { "PDC", resolver => resolver.QueryPdc() },
             { "DomainARecords", resolver => resolver.QueryDomainARecords() },
+            /*
             { "SiteLDAP", resolver =>
                 resolver.AdSite == null ?
                 null :
                 resolver.QuerySrv($"_ldap.{resolver.AdSite}.{resolver.AdDomain}") }
+            */
         };
 
     }
