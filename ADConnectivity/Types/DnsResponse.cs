@@ -4,11 +4,15 @@ using System.Linq;
 
 namespace Dusty.ADConnectivity
 {
-    //in C# we would probably use the pattern of a string[] return type with an out variable for errors
-    //PowerShell doesn't tend to use that pattern. It would work, but would be foreign to most users
-    //so we want an return type for DNS queries that has an 'Error' field
-    //Tuples are not handled well in PowerShell
-    //hence, this class
+    /*
+     * In C#, we would probably use the pattern of a string[] return type, with an out variable
+     * for errors. PowerShell doesn't tend to use that pattern. It would work, but would be 
+     * foreign to most users.
+     * 
+     * So we want an return type for DNS queries that has an 'Error' field.
+     * 
+     * Tuples are not handled well in PowerShell; hence, this class
+     */
     public class DnsResponse : IEqualityComparer<DnsResponse>
     {
         public DnsResponse(string[] answers, string error)
