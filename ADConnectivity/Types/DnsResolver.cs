@@ -10,8 +10,11 @@ using System.Text.RegularExpressions;
 
 namespace Dusty.ADConnectivity
 {
-    //this is named DnsResolver to disambiguate from DnsServer management module
-    //it's a wrapper for the class from Heijden.DNS because we want simpler output for ease-of-use
+    /*
+     * This is named DnsResolver to disambiguate from the DnsServer management module
+     * 
+     * This is a wrapper for Heijden.DNS.Resolver, because we want simpler output
+     */
     public class DnsResolver
     {
         public DnsResolver(IPEndPoint DnsServer)
@@ -39,8 +42,9 @@ namespace Dusty.ADConnectivity
             return DnsServer;
         }
 
-        public DnsResponse Query(string name, QType qtype)
+        public DnsResponse Query(string name, QType qtype = QType.A)
         {
+            //this is a very raw object, very close to the underlying DNS protocol
             Heijden.DNS.Response response = resolver.Query(name, qtype);
 
             List<string> answerStrings = new List<string>();
@@ -57,11 +61,6 @@ namespace Dusty.ADConnectivity
 
             return new DnsResponse(answerStrings.ToArray(), response.Error);
 
-        }
-
-        public DnsResponse Query(string name)
-        {
-            return Query(name, QType.A);
         }
     }
 }

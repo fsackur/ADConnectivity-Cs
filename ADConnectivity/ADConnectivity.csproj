@@ -62,7 +62,6 @@
     <Compile Include="Types\AdDnsResolver.cs" />
     <Compile Include="Types\AdDnsResponse.cs" />
     <Compile Include="Types\IPUtils.cs" />
-    <Compile Include="Types\DnsExtensionMethods.cs" />
     <Compile Include="Types\DnsResolver.cs" />
     <Compile Include="Types\DnsResponse.cs" />
     <Compile Include="PSCmdlets\GetDnsResolver.cs" />
