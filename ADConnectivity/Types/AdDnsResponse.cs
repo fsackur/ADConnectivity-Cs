@@ -87,24 +87,27 @@ namespace Dusty.ADConnectivity
         //an overload that lets us put each discrepancy in an out variable
         public bool Equals(AdDnsResponse comparison, out List<string> differences)
         {
+            if (comparison == null) { throw new ArgumentNullException(); }
+
             differences = new List<string>(1);
-            if (comparison == null)
-            {
-                differences.Add("REF");
-                return false;
-            }
             if (this.AdDomain != comparison.AdDomain)
             {
                 differences.Add("AdDomain");
                 return false;
             }
-            differences = (
-                            from kvpThis in this.namedResponses
-                            join kvpComp in comparison.namedResponses
-                            on kvpThis.Key equals kvpComp.Key
-                            where !kvpThis.Value.Equals(kvpComp.Value.Answers)
-                            select kvpThis.Key
-                        ).ToList<string>();
+            if (this.AdSite != comparison.AdSite)
+            {
+                differences.Add("AdSite");
+                return false;
+            }
+
+            differences = new List<string>(
+                from kvpThis in this.namedResponses
+                join kvpComp in comparison.namedResponses
+                on kvpThis.Key equals kvpComp.Key
+                where !kvpThis.Value.Equals(kvpComp.Value.Answers)
+                select kvpThis.Key
+                );
 
             return (differences.Count == 0);
         }
