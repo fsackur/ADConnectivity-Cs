@@ -25,8 +25,7 @@ namespace Dusty.ADConnectivity
      * methods
      * 
      * We want a certain amount of extensibility, so the actual DNS responses
-     * are backed by a dictionary which we can access with GetResponse and
-     * GetResponses methods
+     * are backed by a dictionary
      * 
      * The extensibility is provided by a static dictionary. You can add
      * lambda expressions that take an instance of AdResolver and return 

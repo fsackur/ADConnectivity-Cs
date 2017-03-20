@@ -37,7 +37,7 @@ namespace Dusty.ADConnectivity
             }
         }
 
-        public new string ToString()
+        public override string ToString()
         {
             return DnsServer;
         }

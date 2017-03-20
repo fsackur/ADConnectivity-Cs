@@ -9,26 +9,29 @@ using System;
 
 namespace Dusty.ADConnectivity
 {
+    /*
+     * We want a return type for the methods in AdDnsResolver that encapsulates
+     * the underlying DnsResponse objects.
+     * 
+     * We want to match the extensibility of AdDnsResolver, so the actual DNS 
+     * responses are backed by a dictionary which we can access with GetResponse 
+     * and GetResponses methods
+     * 
+     * In the context of sanity-checking the DNS servers in an AD domain, it's
+     * useful to know if all DNS servers return the same records, so we implement
+     * Equals
+     */
     public class AdDnsResponse : IEqualityComparer<AdDnsResponse>
     {
         public AdDnsResponse(
-            string dnsServer,
-            string adDomain,
-            Dictionary<string, DnsResponse> namedResponses
-            )
+                            string dnsServer,
+                            string adDomain,
+                            Dictionary<string, DnsResponse> namedResponses,
+                            string adSite = null)
         {
             this.AdDomain = adDomain;
             this.DnsServer = dnsServer;
             this.namedResponses = namedResponses;
-        }
-
-        public AdDnsResponse(
-            string dnsServer,
-            string adDomain,
-            string adSite,
-            Dictionary<string, DnsResponse> namedResponses
-            ) : this (dnsServer, adDomain, namedResponses)
-        {
             this.AdSite = adSite;
         }
 
@@ -106,14 +109,15 @@ namespace Dusty.ADConnectivity
             return (differences.Count == 0);
         }
         
-
-
         public bool Equals(AdDnsResponse comparison)
         {
             return Equals(comparison, null);
         }
 
-        
+        public override int GetHashCode()
+        {
+            return ToString().GetHashCode();
+        }
 
         // IEqualityComparer methods
         public bool Equals(AdDnsResponse x, AdDnsResponse y)
@@ -123,7 +127,7 @@ namespace Dusty.ADConnectivity
 
         public int GetHashCode(AdDnsResponse obj)
         {
-            return ToString().GetHashCode();
+            return obj.ToString().GetHashCode();
         }
     }
 }
