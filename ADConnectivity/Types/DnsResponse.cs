@@ -9,21 +9,24 @@ namespace Dusty.ADConnectivity
      * for errors. PowerShell doesn't tend to use that pattern. It would work, but would be 
      * foreign to most users.
      * 
-     * So we want an return type for DNS queries that has an 'Error' field.
+     * So we want an return type for DNS queries that has an 'Errors' field.
      * 
      * Tuples are not handled well in PowerShell; hence, this class
      */
     public class DnsResponse : IEqualityComparer<DnsResponse>
     {
-        public DnsResponse(string[] answers, string error)
+        public DnsResponse(string[] answers, string[] errors) : this(answers.ToList(), errors.ToList())
+        { }
+        
+        public DnsResponse(List<string> answers, List<string> errors)
         {
-            Array.Sort(answers);
+            answers.Sort();
             this.Answers = answers;
-            this.Error = error;
+            this.Errors = errors;
         }
 
-        public string Error { get; private set; }
-        public string[] Answers { get; private set; }
+        public List<string> Errors { get; private set; }
+        public List<string> Answers { get; private set; }
 
         public override string ToString()
         {

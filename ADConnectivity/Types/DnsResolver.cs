@@ -47,19 +47,22 @@ namespace Dusty.ADConnectivity
             //this is a very raw object, very close to the underlying DNS protocol
             Heijden.DNS.Response response = resolver.Query(name, qtype);
 
-            List<string> answerStrings = new List<string>();
+            var answerStrings = new List<string>();
+            var errors = new List<string>();
+            if (!String.IsNullOrWhiteSpace(response.Error)) { errors.Add(response.Error); }
 
             foreach (var answer in response.Answers)
             {
                 string answerString = answer.RECORD.ToString();
                 if (answer.Type == Heijden.DNS.Type.SRV)
                 {
+                    //discard the priority/weight/port fields for SRV records
                     answerString = Regex.Replace(answerString, "\\d* \\d* \\d* ", "");
                 }
                 answerStrings.Add(answerString);
             }
 
-            return new DnsResponse(answerStrings.ToArray(), response.Error);
+            return new DnsResponse(answerStrings, errors);
 
         }
     }

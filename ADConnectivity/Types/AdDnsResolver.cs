@@ -33,8 +33,6 @@ namespace Dusty.ADConnectivity
      */
     public class AdDnsResolver : DnsResolver
     {
-        private readonly string pdcMultipleRecordError = "Multiple records for PDC locator";
-
         public AdDnsResolver(IPEndPoint DnsServer, string AdDomain, string AdSite = null) : base(DnsServer)
         {
             this.AdDomain = AdDomain;
@@ -67,10 +65,9 @@ namespace Dusty.ADConnectivity
 
             if (Pdc.Answers.Count() > 1)
             {
-                string error = Pdc.Error == null ?
-                    pdcMultipleRecordError :
-                    $"{pdcMultipleRecordError};{Pdc.Error}";
-                Pdc = new DnsResponse(Pdc.Answers, error);
+                var errors = Pdc.Errors.ToList();
+                errors.Insert(0, "PDC locator resolves to multiple IPs");
+                Pdc = new DnsResponse(Pdc.Answers, errors);
             }
 
             return Pdc;
@@ -78,25 +75,22 @@ namespace Dusty.ADConnectivity
 
         public DnsResponse QuerySrv(string locator)
         {
-            List<string> ipAnswers = new List<string>();
-            List<string> errors = new List<string>();
-
             var response = Query(locator, QType.SRV);
-            if (response.Error != null) { errors.Add(response.Error); }
+            var errors = response.Errors.ToList();
 
+            List<string> ipAnswers = new List<string>();
             foreach (var name in response.Answers)
             {
                 var secondResponse = Query(name);
-                if (!String.IsNullOrWhiteSpace(secondResponse.Error))
-                {
-                    errors.Add(secondResponse.Error);
-                }
+                errors.AddRange(secondResponse.Errors);
+                if (secondResponse.Answers.Count > 1) { errors.Insert(0, "SRV target resolves to multiple IPs"); }
+                if (secondResponse.Answers.Count < 1) { errors.Insert(0, "SRV target cannot be resolved"); }
                 ipAnswers.AddRange(secondResponse.Answers);
             }
 
             return new DnsResponse(
                 ipAnswers.ToArray<string>(), 
-                String.Join(";", errors.ToArray())
+                errors.ToArray()
                 );
         }
 
@@ -134,12 +128,12 @@ namespace Dusty.ADConnectivity
         {
             { "PDC", resolver => resolver.QueryPdc() },
             { "DomainARecords", resolver => resolver.QueryDomainARecords() },
-            /*
+            
             { "SiteLDAP", resolver =>
                 resolver.AdSite == null ?
                 null :
                 resolver.QuerySrv($"_ldap.{resolver.AdSite}.{resolver.AdDomain}") }
-            */
+            
         };
 
     }

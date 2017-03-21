@@ -21,17 +21,18 @@ namespace Dusty.ADConnectivity
      * useful to know if all DNS servers return the same records, so we implement
      * Equals
      */
-    public class AdDnsResponse : IEqualityComparer<AdDnsResponse>
+    public class AdDnsResponse : IEqualityComparer<AdDnsResponse>, IEquatable<AdDnsResponse>
     {
         public AdDnsResponse(
-                            string dnsServer,
-                            string adDomain,
-                            Dictionary<string, DnsResponse> namedResponses,
-                            string adSite = null)
+            Dictionary<string, DnsResponse> namedResponses,
+            string dnsServer,
+            string adDomain,
+            string adSite = null
+        )
         {
+            this.namedResponses = namedResponses;
             this.AdDomain = adDomain;
             this.DnsServer = dnsServer;
-            this.namedResponses = namedResponses;
             this.AdSite = adSite;
         }
 
@@ -58,19 +59,31 @@ namespace Dusty.ADConnectivity
             }
         }
 
-        public string[] GetErrors()
+        public List<string> GetErrors()
         {
-            return namedResponses
-                .Values
-                .Select(response => response.Error)
-                .Where(s => !string.IsNullOrWhiteSpace(s))
-                .Distinct()
-                .ToArray();
+            List<string> errors = new List<string>();
+            foreach (var kvp in namedResponses)
+            {
+                if (kvp.Value == null)
+                {
+                    errors.Add($"{kvp.Key}: No record found");
+                }
+                else
+                {
+                    errors.AddRange(
+                        from e in kvp.Value.Errors
+                        select $"{kvp.Key}: {e}"
+                        );
+                }
+            }
+            return errors;
         }
 
         public DnsResponse GetResponse(string name)
         {
-            return namedResponses[name];
+            DnsResponse retval;
+            namedResponses.TryGetValue(name, out retval);
+            return retval;
         }
 
         public Dictionary<string, DnsResponse> GetResponses()
@@ -90,6 +103,7 @@ namespace Dusty.ADConnectivity
             if (comparison == null) { throw new ArgumentNullException(); }
 
             differences = new List<string>(1);
+            /*
             if (this.AdDomain != comparison.AdDomain)
             {
                 differences.Add("AdDomain");
@@ -100,21 +114,25 @@ namespace Dusty.ADConnectivity
                 differences.Add("AdSite");
                 return false;
             }
-
+            */
             differences = new List<string>(
                 from kvpThis in this.namedResponses
                 join kvpComp in comparison.namedResponses
                 on kvpThis.Key equals kvpComp.Key
-                where !kvpThis.Value.Equals(kvpComp.Value.Answers)
+                where
+                    kvpThis.Value == null ?
+                    kvpComp.Value != null :
+                    !kvpThis.Value.Equals(kvpComp.Value)
                 select kvpThis.Key
                 );
-
+            
             return (differences.Count == 0);
         }
         
         public bool Equals(AdDnsResponse comparison)
         {
-            return Equals(comparison, null);
+            List<string> outval;
+            return Equals(comparison, out outval);
         }
 
         public override int GetHashCode()
@@ -125,6 +143,8 @@ namespace Dusty.ADConnectivity
         // IEqualityComparer methods
         public bool Equals(AdDnsResponse x, AdDnsResponse y)
         {
+            if (x == null && y == null) { return true; }
+            if (x == null && y != null) { return false; }
             return x.Equals(y);
         }
 
